@@ -1,3 +1,4 @@
+# ADD in requiements.txt protobuf==3.20.1
 import datetime
 import difflib
 import json
