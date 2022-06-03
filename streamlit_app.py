@@ -1,9 +1,6 @@
-# ADD in requiements.txt protobuf==3.20.1 AND click<8.0
 import datetime
 import difflib
 import json
-from turtle import onclick, width
-import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import streamlit as st
