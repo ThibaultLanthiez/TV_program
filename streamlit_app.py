@@ -213,7 +213,7 @@ for i, index_movie in enumerate(movie_ranking):
     if press_rate == 0:
         press_rate = "aucune note"
 
-    if platform.uname().system == "Linux":
+    if platform.uname().system == "Linux": # Mobile device
         column = st
     else:
         for index_col, col in enumerate(list_col_cinema):
@@ -241,7 +241,7 @@ def show_prog(title, data):
     for i, prog in enumerate(data):
         img_movie, channel, channel_number, starting_hour, title, subtitle = prog
         
-        if platform.uname().system == "Linux":
+        if platform.uname().system == "Linux": # Mobile device
             column = st
         else:
             for index_col, col in enumerate(list_col_cinema):
