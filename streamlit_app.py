@@ -8,6 +8,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 from googletrans import Translator
+import platform
 
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
@@ -22,6 +23,7 @@ translation = english_translator.translate(today_date, dest="fr")
 col1, col2 = st.columns(2)
 st.title("Ce soir à la télé")
 st.title(translation.text)
+st.title(platform.uname().system)
 
 progress_bar = st.progress(0)
 
