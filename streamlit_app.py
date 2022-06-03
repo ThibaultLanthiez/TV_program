@@ -8,7 +8,6 @@ from PIL import Image
 import requests
 from io import BytesIO
 from googletrans import Translator
-import platform
 
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
@@ -21,8 +20,6 @@ translation = english_translator.translate(today_date, dest="fr")
 col1, col2 = st.columns(2)
 st.title("Ce soir à la télé")
 st.title(translation.text)
-
-st.title(platform.uname().system)
 
 progress_bar = st.progress(0)
 
@@ -213,13 +210,13 @@ for i, index_movie in enumerate(movie_ranking):
     if press_rate == 0:
         press_rate = "aucune note"
 
-    if platform.uname().system == "Linux": # Mobile device
-        column = st
-    else:
-        for index_col, col in enumerate(list_col_cinema):
-            if i in range(index_col, 20, nb_col):
-                column = col
-                break
+    # if platform.uname().system == "Linux": # Mobile device
+    #     column = st
+    # else:
+    for index_col, col in enumerate(list_col_cinema):
+        if i in range(index_col, 20, nb_col):
+            column = col
+            break
         
     column.write("_____")
     column.image(img_movie_allocine, width=120)
@@ -241,13 +238,13 @@ def show_prog(title, data):
     for i, prog in enumerate(data):
         img_movie, channel, channel_number, starting_hour, title, subtitle = prog
         
-        if platform.uname().system == "Linux": # Mobile device
-            column = st
-        else:
-            for index_col, col in enumerate(list_col):
-                if i in range(index_col, 20, nb_col):
-                    column = col
-                    break
+        # if platform.uname().system == "Linux": # Mobile device
+        #     column = st
+        # else:
+        for index_col, col in enumerate(list_col):
+            if i in range(index_col, 20, nb_col):
+                column = col
+                break
 
         column.write("_____")
         column.image(img_movie, width=120)
