@@ -22,6 +22,8 @@ col1, col2 = st.columns(2)
 st.title("Ce soir à la télé")
 st.title(translation.text)
 
+st.title(platform.uname().system)
+
 progress_bar = st.progress(0)
 
 def get_movie_info():
