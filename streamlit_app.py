@@ -13,8 +13,6 @@ import platform
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
 
-
-
 st.set_page_config(page_title="Programme TV", layout="wide")
 
 today_date = str(datetime.datetime.today().strftime('%A %d %b %Y'))
@@ -244,7 +242,7 @@ def show_prog(title, data):
         if platform.uname().system == "Linux": # Mobile device
             column = st
         else:
-            for index_col, col in enumerate(list_col_cinema):
+            for index_col, col in enumerate(list_col):
                 if i in range(index_col, 20, nb_col):
                     column = col
                     break
@@ -266,7 +264,5 @@ show_prog(title="Autre", data=liste_autre)
 # Ajouter best acteur
 # Ajouter durée film
 # Ajouter pour tous les autres : résumé
-# Attention ordre film pour portable
 # Ajouter résumé pour autre programme
 # Mettre sur porfolio
-# Gérer droit accès sur mobile
