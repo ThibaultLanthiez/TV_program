@@ -108,14 +108,12 @@ def get_movie_info():
                 results = soup.find(id="corps")
                 info_of_movie = results.find_all('ul', class_="overview-overviewSubtitle")    
                 release_year = info_of_movie[0].find_all("li")[1].text.strip()
-                print(title, release_year)
+                # print(title, release_year)
 
                 closest_key = difflib.get_close_matches(title.lower(), movie_data_base.keys())[0]
                 urls_movie = movie_data_base[closest_key]
                 print(closest_key, urls_movie)
                     
-                if closest_key == "lee":
-                    continue
 
                 if len(urls_movie) > 1:
                     for url in urls_movie:
@@ -127,11 +125,12 @@ def get_movie_info():
                         year_element = year_element[0].find_all('span')
                         year = year_element[0].text.strip()[-4:]
 
-                        print(year, release_year)
-                        if year == release_year:
+                        # print(year, release_year)
+                        if int(year) in [int(release_year)-1, int(release_year), int(release_year)+1]:
                             break
                 else:
                     url = urls_movie[0]
+                    year = release_year
 
                 
                 page = requests.get(url)
@@ -144,11 +143,13 @@ def get_movie_info():
                 else:
                     resume = ""   
 
-                video_element = soup.find_all('figure', class_="player player-auto-play js-player")
-                dico_video = json.loads(video_element[0]['data-model'])
-                video_link = dico_video['videos'][0]['sources']['standard']
-                url_trailer = video_link.replace("\\","")
+                genre_element = results.find_all('div', class_="meta-body-item meta-body-info")
+                genre = genre_element[0].find_all('span')[-1].text.strip()
+                
+                
+                video_element = results.find_all('a', class_="trailer item")[0]['href']
 
+                # Get movie image
                 image_element = results.find_all('img', class_="thumbnail-img")
                 url_img_movie_allocine = image_element[0]["src"] 
                 response = requests.get(url_img_movie_allocine)
@@ -164,7 +165,18 @@ def get_movie_info():
                     press_rate, spect_rate = 0, float(ratings[0].text.strip().replace(',','.'))
                 else:
                     press_rate, spect_rate = 0,0
-                liste_cinema.append([channel, channel_number, url_trailer, starting_hour, title, subtitle, url, resume, img_movie_allocine, press_rate, spect_rate])
+
+                page = requests.get(f"https://www.allocine.fr{video_element}")
+                # print(f"https://www.allocine.fr{video_element}")
+                soup = BeautifulSoup(page.content, "html.parser")
+                results = soup.find(id="allocine__moviepage_videos_trailer")
+                trailer_element = results.find_all("div", class_="video-card-player")
+                video_element = trailer_element[0].find_all("figure")
+                dico_video = json.loads(video_element[0]['data-model'])
+                video_link = dico_video['videos'][0]['sources']['standard'] 
+                url_trailer = video_link.replace("\\","")
+                
+                liste_cinema.append([channel, channel_number, genre, year, url_trailer, starting_hour, title, subtitle, url, resume, img_movie_allocine, press_rate, spect_rate])
    
            
             # Show information
@@ -197,7 +209,7 @@ st.title("Cinéma")
 col1, col2, col3, col4 = st.columns(4)
 for i, index_movie in enumerate(movie_ranking):
     movie = liste_cinema[index_movie]
-    channel, channel_number, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
+    channel, channel_number, genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
     
     if press_rate == 0:
         press_rate = "aucune note"
@@ -211,6 +223,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
+                st.markdown(f"**Année de sortie** : {year}")
+                st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
                 st.markdown(f"[Voir sur Allociné]({url_movie})")         
     if i in [1,5,9,13,17]:
@@ -222,6 +236,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
+                st.markdown(f"**Année de sortie** : {year}")
+                st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
                 st.markdown(f"[Voir sur Allociné]({url_movie})")  
     if i in [2,6,10,14,18]:
@@ -233,6 +249,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
+                st.markdown(f"**Année de sortie** : {year}")
+                st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
                 st.markdown(f"[Voir sur Allociné]({url_movie})")   
     if i in [3,7,11,15,19]:
@@ -244,6 +262,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
+                st.markdown(f"**Année de sortie** : {year}")
+                st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
                 st.markdown(f"[Voir sur Allociné]({url_movie})")        
             
@@ -280,10 +300,10 @@ def show_prog(title, data):
                 st.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
                 st.markdown(f"**{title} {f'({subtitle})' if (subtitle and subtitle!=title) else ''}**")                     
 
-show_prog(title="Série TV", data=liste_serieTV)
 show_prog(title="Culture Infos", data=liste_culture)
 show_prog(title="Téléfilm", data=liste_tele_film)
 show_prog(title="Sport", data=liste_sport)
+show_prog(title="Série TV", data=liste_serieTV)
 show_prog(title="Autre", data=liste_autre)
 
 
