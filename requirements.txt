@@ -2,7 +2,6 @@ beautifulsoup4==4.11.1
 googletrans==3.1.0a0
 Pillow==9.1.1
 requests==2.26.0
-streamlit==1.1.0
+streamlit==1.10.0
 protobuf==3.20.1
 tqdm==4.64.0
-click>=7.0
