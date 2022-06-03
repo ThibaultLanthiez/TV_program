@@ -216,8 +216,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.write("_____")
             st.image(img_movie_allocine, width=120)
             st.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-            st.markdown(f"**{title} {f'({subtitle})' if (subtitle and subtitle!=title) else ''}**")                     
-            st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
+            st.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
+            st.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
                 st.markdown(f"**Année de sortie** : {year}")
@@ -229,8 +229,8 @@ for i, index_movie in enumerate(movie_ranking):
             st.write("_____")
             st.image(img_movie_allocine, width=120)
             st.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-            st.markdown(f"**{title} {f'({subtitle})' if (subtitle and subtitle!=title) else ''}**")                     
-            st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
+            st.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
+            st.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
                 st.markdown(f"**Année de sortie** : {year}")
@@ -242,27 +242,27 @@ for i, index_movie in enumerate(movie_ranking):
             st.write("_____")
             st.image(img_movie_allocine, width=120)
             st.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-            st.markdown(f"**{title} {f'({subtitle})' if (subtitle and subtitle!=title) else ''}**")                     
-            st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
+            st.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
+            st.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
                 st.markdown(f"**Année de sortie** : {year}")
                 st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
-                st.markdown(f"[Voir sur Allociné]({url_movie})")   
+                st.markdown(f"[Voir sur Allociné]({url_movie})")    
     if i in [3,7,11,15,19]:
         with col4:
             st.write("_____")
             st.image(img_movie_allocine, width=120)
             st.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-            st.markdown(f"**{title} {f'({subtitle})' if (subtitle and subtitle!=title) else ''}**")                     
-            st.markdown(f"Presse : **{press_rate}**  |  Spectateurs : **{spect_rate}**")   
+            st.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
+            st.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
             with st.expander("Informations sur le film"):
                 st.video(url_trailer)
                 st.markdown(f"**Année de sortie** : {year}")
                 st.markdown(f"**Genre** : {genre}")
                 st.markdown(f"**Résumé** : {resume}")
-                st.markdown(f"[Voir sur Allociné]({url_movie})")        
+                st.markdown(f"[Voir sur Allociné]({url_movie})")    
             
 
 ##########
