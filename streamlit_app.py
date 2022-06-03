@@ -14,7 +14,7 @@ with open('url_movies_allocine.json', 'r') as f:
 
 
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Programme TV", layout="wide")
 
 today_date = str(datetime.datetime.today().strftime('%A %d %b %Y'))
 english_translator = Translator() # pip install googletrans==3.1.0a0
@@ -109,7 +109,7 @@ def get_movie_info():
 
                 closest_key = difflib.get_close_matches(title.lower(), movie_data_base.keys())[0]
                 urls_movie = movie_data_base[closest_key]
-                print(closest_key, urls_movie)
+                # print(closest_key, urls_movie)
                     
 
                 if len(urls_movie) > 1:
