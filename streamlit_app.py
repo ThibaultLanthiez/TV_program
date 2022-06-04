@@ -219,6 +219,8 @@ movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_des
 
 
 st.title("Cinéma")
+if not liste_cinema:
+    st.write("Pas de film pour ce soir")
 nb_col = 4
 list_col_cinema = st.columns(nb_col)
 for i, index_movie in enumerate(movie_ranking):
@@ -250,6 +252,8 @@ for i, index_movie in enumerate(movie_ranking):
 
 ##########
 def show_prog(title, data):
+    if not data:
+        st.write("Pas de programme")
     st.title(title)
     nb_col = 4
     list_col = st.columns(nb_col)
