@@ -26,7 +26,8 @@ progress_bar = st.progress(0)
 def get_movie_info():
     liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
 
-    URL = "https://www.programme-tv.net/programme/programme-tnt.html"
+    # URL = "https://www.programme-tv.net/programme/programme-tnt.html"
+    URL = "https://www.programme-tv.net/programme/toutes-les-chaines/2022-06-03/"
     page = requests.get(URL)
 
     soup = BeautifulSoup(page.content, "html.parser")
@@ -73,8 +74,6 @@ def get_movie_info():
 
             # Get program's type
             movie_type_element = movie_element[0].find_all("p", class_="mainBroadcastCard-format")
-            title_elements = movie_element[0].find_all("h3", class_="mainBroadcastCard-title")
-            title_element = title_elements[0].find_all("a")
             if movie_type_element:
                 movie_type = movie_type_element[0].text.strip()
             else:
@@ -93,6 +92,18 @@ def get_movie_info():
                 url_image_movie = apply_ratio[0]["src"] 
             response = requests.get(url_image_movie)
             img_movie = Image.open(BytesIO(response.content))
+
+
+            # Get release year
+            page = requests.get(link)
+            soup = BeautifulSoup(page.content, "html.parser")
+            results = soup.find(id="corps")
+            info_of_prog = results.find_all('div', class_="synopsis defaultStyleContentTags")
+            if info_of_prog:
+                resume_prog = info_of_prog[0].text.strip()
+            else:
+                resume_prog = None
+
 
             # Get Allocine information
             if movie_type == "Cinéma":
@@ -139,8 +150,15 @@ def get_movie_info():
                     resume = ""   
 
                 genre_element = results.find_all('div', class_="meta-body-item meta-body-info")
-                genre = genre_element[0].find_all('span')[-1].text.strip()
-                
+                list_genre_incorrect = [g.text.strip() for g in genre_element[0].find_all('span')]
+                # print(list_genre_incorrect)
+                for i_elt, elt in enumerate(reversed(list_genre_incorrect)):
+                    if elt == '/':
+                        break
+                list_genre = list_genre_incorrect[-i_elt:]
+
+                actors_element = results.find_all('div', class_="meta-body-item meta-body-actor")
+                list_actors = [actor.text.strip() for actor in actors_element[0].find_all('span')[1:]]
                 
                 video_element = results.find_all('a', class_="trailer item")[0]['href']
 
@@ -171,21 +189,21 @@ def get_movie_info():
                 video_link = dico_video['videos'][0]['sources']['standard'] 
                 url_trailer = video_link.replace("\\","")
                 
-                liste_cinema.append([channel, channel_number, genre, year, url_trailer, starting_hour, title, subtitle, url, resume, img_movie_allocine, press_rate, spect_rate])
+                liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, img_movie_allocine, press_rate, spect_rate])
    
            
             # Show information
             else:
                 if movie_type == "Série TV":
-                    liste_serieTV.append([img_movie, channel, channel_number, starting_hour, title, subtitle])
+                    liste_serieTV.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Culture Infos":
-                    liste_culture.append([img_movie, channel, channel_number, starting_hour, title, subtitle])
+                    liste_culture.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Téléfilm":
-                    liste_tele_film.append([img_movie, channel, channel_number, starting_hour, title, subtitle])
+                    liste_tele_film.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Sport":
-                    liste_sport.append([img_movie, channel, channel_number, starting_hour, title, subtitle])
+                    liste_sport.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 else:
-                    liste_autre.append([img_movie, channel, channel_number, starting_hour, title, subtitle])
+                    liste_autre.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
           
     return liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre 
 
@@ -205,7 +223,7 @@ nb_col = 4
 list_col_cinema = st.columns(nb_col)
 for i, index_movie in enumerate(movie_ranking):
     movie = liste_cinema[index_movie]
-    channel, channel_number, genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
+    channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
     
     if press_rate == 0:
         press_rate = "aucune note"
@@ -219,14 +237,14 @@ for i, index_movie in enumerate(movie_ranking):
             break
         
     column.write("_____")
-    column.image(img_movie_allocine, width=120)
+    column.image(img_movie_allocine, width=150)
     column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
     column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
     column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
     with column.expander("Informations sur le film"):
         st.video(url_trailer)
-        st.markdown(f"**Année de sortie** : {year}")
-        st.markdown(f"**Genre** : {genre}")
+        st.markdown(f"**Genre** : {', '.join(list_genre)}")
+        st.markdown(f"**Avec** : {', '.join(list_actors)}")
         st.markdown(f"**Résumé** : {resume}")
         st.markdown(f"[Voir sur Allociné]({url_movie})")   
 
@@ -236,7 +254,7 @@ def show_prog(title, data):
     nb_col = 4
     list_col = st.columns(nb_col)
     for i, prog in enumerate(data):
-        img_movie, channel, channel_number, starting_hour, title, subtitle = prog
+        img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle = prog
         
         # if platform.uname().system == "Linux": # Mobile device
         #     column = st
@@ -247,10 +265,13 @@ def show_prog(title, data):
                 break
 
         column.write("_____")
-        column.image(img_movie, width=120)
+        column.image(img_movie, width=150)
         column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
         subtitle_markdown = f"({subtitle})" if (subtitle and subtitle!=title) else ""
         column.markdown(f"**{title}** {subtitle_markdown}") 
+        if resume_prog:
+            with column.expander("Informations sur le programme"):
+                st.markdown(f"**Résumé** : {resume_prog}")
        
 show_prog(title="Culture Infos", data=liste_culture)
 show_prog(title="Téléfilm", data=liste_tele_film)
@@ -260,8 +281,5 @@ show_prog(title="Autre", data=liste_autre)
 
 
 # Avoir note téléfilm
-# Ajouter best acteur
 # Ajouter durée film
-# Ajouter pour tous les autres : résumé
-# Ajouter résumé pour autre programme
 # Mettre sur porfolio
