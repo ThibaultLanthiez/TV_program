@@ -12,27 +12,23 @@ from googletrans import Translator
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
 
-st.set_page_config(page_title="Programme TV", layout="wide")
-
-today_date = str(datetime.datetime.today().strftime('%A %d %b %Y'))
-english_translator = Translator() # pip install googletrans==3.1.0a0
-translation = english_translator.translate(today_date, dest="fr")
-col1, col2 = st.columns(2)
-st.title("Ce soir à la télé")
-st.title(translation.text)
+st.set_page_config(page_title="Programme TV", 
+                   layout="wide",
+                   initial_sidebar_state="collapsed")
 
 progress_bar = st.progress(0)
 
-def get_movie_info():
+def get_movie_info(date=""):
     liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
 
-    URL = "https://www.programme-tv.net/programme/programme-tnt.html"
-    # URL = "https://www.programme-tv.net/programme/toutes-les-chaines/2022-06-03/"
+    if date:
+        URL = f"https://www.programme-tv.net/programme/toutes-les-chaines/{date}/"
+    else:
+        URL = "https://www.programme-tv.net/programme/programme-tnt.html"
     page = requests.get(URL)
 
     soup = BeautifulSoup(page.content, "html.parser")
     results = soup.find(id="corps")
-
 
     all_page = results.find_all("div", class_="grid-rows")
     for movie_bloc in all_page:
@@ -151,7 +147,6 @@ def get_movie_info():
 
                 genre_element = results.find_all('div', class_="meta-body-item meta-body-info")
                 list_genre_incorrect = [g.text.strip() for g in genre_element[0].find_all('span')]
-                # print(list_genre_incorrect)
                 for i_elt, elt in enumerate(reversed(list_genre_incorrect)):
                     if elt == '/':
                         break
@@ -208,7 +203,33 @@ def get_movie_info():
     return liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre 
 
 
-liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info()
+choice_date = st.sidebar.selectbox(
+     "Choix de la date :",
+     ('Hier', 'Ce soir', 'Demain'),
+     index=1)
+
+if choice_date == "Ce soir":
+    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info()
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+elif choice_date == "Demain":
+    currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=1)
+    date = currentTimeDate.strftime('%Y-%m-%d')
+    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
+elif choice_date == "Hier":
+    currentTimeDate = datetime.datetime.now() - datetime.timedelta(days=1)
+    date = currentTimeDate.strftime('%Y-%m-%d')
+    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
+
+progress_bar.empty()
+
+date = datetime.datetime.strptime(date, '%Y-%m-%d')
+date_correct = str(date.strftime('%A %d %b %Y'))
+english_translator = Translator() # pip install googletrans==3.1.0a0
+translation = english_translator.translate(date_correct, dest="fr")
+col1, col2 = st.columns(2)
+st.title(f"{choice_date} à la télé")
+st.title(translation.text)
+st.write("_____")
 
 ##############
 

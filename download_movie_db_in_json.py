@@ -40,6 +40,10 @@ def initialize_movie_db():
         all_page = results_allocine.find_all("a", class_="meta-title-link")
         for element in all_page:
             title = element.text.strip().lower()
+
+            if title == "lola e seus irmãos":
+                title = "lola et ses frères"
+
             if movie_data_base.get(title) and (f"https://www.allocine.fr{element['href']}" not in movie_data_base[title]):
                 print(f"\tADD - {title}")
                 movie_data_base[title] = movie_data_base[title] + [f"https://www.allocine.fr{element['href']}"]
