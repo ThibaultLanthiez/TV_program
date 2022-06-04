@@ -26,8 +26,8 @@ progress_bar = st.progress(0)
 def get_movie_info():
     liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
 
-    # URL = "https://www.programme-tv.net/programme/programme-tnt.html"
-    URL = "https://www.programme-tv.net/programme/toutes-les-chaines/2022-06-03/"
+    URL = "https://www.programme-tv.net/programme/programme-tnt.html"
+    # URL = "https://www.programme-tv.net/programme/toutes-les-chaines/2022-06-03/"
     page = requests.get(URL)
 
     soup = BeautifulSoup(page.content, "html.parser")
