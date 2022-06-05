@@ -10,16 +10,16 @@ from io import BytesIO
 from googletrans import Translator
 
 from get_movie_info import get_movie_info
-#PyAutoGUI==0.9.53
+
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
 
 st.set_page_config(page_title="Programme TV", 
                    layout="wide",
                    initial_sidebar_state="collapsed")
-# import pyautogui
-# width = pyautogui.size().width
-# st.write(width)
+import pyautogui
+width = pyautogui.size().width
+st.write(width)
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
