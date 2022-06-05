@@ -18,7 +18,7 @@ st.set_page_config(page_title="Programme TV",
                    initial_sidebar_state="collapsed")
 
 import subprocess
-output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+output = subprocess.run("xrandr | grep '*'")
 st.write(output)
 
 choice_date = st.sidebar.selectbox(
