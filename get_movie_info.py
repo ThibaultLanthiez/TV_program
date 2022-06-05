@@ -9,11 +9,12 @@ from io import BytesIO
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
 
-def get_movie_info(progress_bar, date=""):
-    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
+def get_info_prog(date=""):
+
+    list_info = []
 
     if date:
-        URL = f"https://www.programme-tv.net/programme/programme-tnt/toutes-les-chaines/{date}/"
+        URL = f"https://www.programme-tv.net/programme/programme-tnt/{date}/"
     else:
         URL = "https://www.programme-tv.net/programme/programme-tnt.html"
     page = requests.get(URL)
@@ -36,6 +37,13 @@ def get_movie_info(progress_bar, date=""):
             channel_info = channel_infos_element[0].find_all("a")
             channel = channel_info[0].text.strip()[len(channel_number):]
 
+            list_info.append([info, channel_number, channel])
+    return list_info
+
+
+def get_movie_info(progress_bar, date=""):
+    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
+    for info, channel_number, channel in get_info_prog(date):
             progress_bar.progress(int(channel_number[2:])/26)
 
             # Get movie
