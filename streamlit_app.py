@@ -18,7 +18,6 @@ st.set_page_config(page_title="Programme TV",
                    layout="wide",
                    initial_sidebar_state="collapsed")
 
-os.environ['DISPLAY'] = ':0'
 import pyautogui
 width = pyautogui.size().width
 st.write(width)
