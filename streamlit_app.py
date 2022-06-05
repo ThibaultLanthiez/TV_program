@@ -20,13 +20,16 @@ st.set_page_config(page_title="Programme TV",
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
-     ('Hier', 'Ce soir', 'Demain'),
+     ('Hier', 'Ce soir', 'Demain', "Après demain"),
      index=1)
 
 if choice_date == "Ce soir":
     date = ""
 elif choice_date == "Demain":
     currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=1)
+    date = currentTimeDate.strftime('%Y-%m-%d')
+elif choice_date == "Après demain":
+    currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=2)
     date = currentTimeDate.strftime('%Y-%m-%d')
 elif choice_date == "Hier":
     currentTimeDate = datetime.datetime.now() - datetime.timedelta(days=1)
@@ -54,7 +57,8 @@ movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_des
 
 st.title("Cinéma")
 if not liste_cinema:
-    st.write("Pas de film")
+    st.write("_____")
+    st.markdown("**Pas de film**")
 nb_col = 4
 list_col_cinema = st.columns(nb_col)
 for i, index_movie in enumerate(movie_ranking):
@@ -63,6 +67,8 @@ for i, index_movie in enumerate(movie_ranking):
     
     if press_rate == 0:
         press_rate = "aucune note"
+    if spect_rate == 0:
+        spect_rate = "aucune note"
 
     # if platform.uname().system == "Linux": # Mobile device
     #     column = st
@@ -77,18 +83,22 @@ for i, index_movie in enumerate(movie_ranking):
     column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
     column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
     column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
-    with column.expander("Informations sur le film"):
-        st.video(url_trailer)
-        st.markdown(f"**Genre** : {', '.join(list_genre)}")
-        st.markdown(f"**Avec** : {', '.join(list_actors)}")
-        st.markdown(f"**Résumé** : {resume}")
-        st.markdown(f"[Voir sur Allociné]({url_movie})")   
+    if url_trailer:
+        with column.expander("Informations sur le film"):
+            st.video(url_trailer)
+            st.markdown(f"**Genre** : {', '.join(list_genre)}")
+            st.markdown(f"**Avec** : {', '.join(list_actors)}")
+            st.markdown(f"**Résumé** : {resume}")
+            st.markdown(f"[Voir sur Allociné]({url_movie})") 
+    else:
+        column.markdown(":warning: Film non trouvé sur Allocine")  
 
 ##########
 def show_prog(title, data):
     st.title(title)
     if not data:
-        st.write("Pas de programme")
+        st.write("_____")
+        st.markdown("**Pas de programme**")
     nb_col = 4
     list_col = st.columns(nb_col)
     for i, prog in enumerate(data):
@@ -121,3 +131,4 @@ show_prog(title="Autre", data=liste_autre)
 # Avoir note téléfilm
 # Ajouter durée film
 # Mettre sur porfolio
+# Gérer ordre portable
