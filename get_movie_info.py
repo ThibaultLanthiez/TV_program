@@ -31,7 +31,7 @@ def get_movie_info(progress_bar, date=""):
             channel_infos_element = info.find_all("div", class_="gridRow-cardsChannel")
             channel_number_info = channel_infos_element[0].find_all("p")
             channel_number = channel_number_info[0].text.strip()
-            if (int(channel_number[2:]) == 4) or (int(channel_number[2:]) > 25):
+            if (int(channel_number[2:]) == 4) or (int(channel_number[2:]) > 26):
                 continue
             channel_info = channel_infos_element[0].find_all("a")
             channel = channel_info[0].text.strip()[len(channel_number):]
