@@ -13,7 +13,7 @@ def get_movie_info(progress_bar, date=""):
     liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = [], [], [], [], [], []
 
     if date:
-        URL = f"https://www.programme-tv.net/programme/toutes-les-chaines/{date}/"
+        URL = f"https://www.programme-tv.net/programme/programme-tnt/toutes-les-chaines/{date}/"
     else:
         URL = "https://www.programme-tv.net/programme/programme-tnt.html"
     page = requests.get(URL)
@@ -36,7 +36,7 @@ def get_movie_info(progress_bar, date=""):
             channel_info = channel_infos_element[0].find_all("a")
             channel = channel_info[0].text.strip()[len(channel_number):]
 
-            progress_bar.progress(int(channel_number[2:])/25)
+            progress_bar.progress(int(channel_number[2:])/26)
 
             # Get movie
             film_movie_element = info.find_all("div", class_="mainBroadcastCard reverse")
