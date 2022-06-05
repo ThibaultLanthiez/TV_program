@@ -17,12 +17,8 @@ with open('url_movies_allocine.json', 'r') as f:
 st.set_page_config(page_title="Programme TV", 
                    layout="wide",
                    initial_sidebar_state="collapsed")
-# from screeninfo import get_monitors
-# st.write(get_monitors()[0].width)
-
-import wx
-app = wx.App(False)
-width, height = wx.GetDisplaySize()
+import pyautogui
+width = pyautogui.size().width
 st.write(width)
 
 choice_date = st.sidebar.selectbox(

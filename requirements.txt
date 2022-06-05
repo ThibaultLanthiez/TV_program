@@ -6,4 +6,4 @@ streamlit==1.10.0
 protobuf==3.20.1
 tqdm==4.64.0
 tk==0.1.0
-wxPython==4.1.1
+PyAutoGUI==0.9.53
