@@ -53,7 +53,7 @@ def show_prog(title, data):
     if data:
         st.title(title)
         nb_col = 4
-        list_col_cinema = st.columns(nb_col)
+        list_col = st.columns(nb_col)
         if title == "Cinéma":
             # Sort movie by spectator rate
             movie_ranking_initial = [(elt[-1], elt[-2], elt[4]) for elt in data]
@@ -71,7 +71,7 @@ def show_prog(title, data):
                 # if platform.uname().system == "Linux": # Mobile device
                 #     column = st
                 # else:
-                for index_col, col in enumerate(list_col_cinema):
+                for index_col, col in enumerate(list_col):
                     if i in range(index_col, 20, nb_col):
                         column = col
                         break
