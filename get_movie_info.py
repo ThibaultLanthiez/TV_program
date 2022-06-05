@@ -89,8 +89,6 @@ def get_movie_info(progress_bar, date=""):
                 url_image_movie = apply_ratio_lazyloaded[0]["data-src"]   
             elif apply_ratio:
                 url_image_movie = apply_ratio[0]["src"] 
-            response = requests.get(url_image_movie)
-            img_movie = Image.open(BytesIO(response.content))
 
 
             # Get release year
@@ -164,8 +162,6 @@ def get_movie_info(progress_bar, date=""):
                     # Get movie image
                     image_element = results.find_all('img', class_="thumbnail-img")
                     url_img_movie_allocine = image_element[0]["src"] 
-                    response = requests.get(url_img_movie_allocine)
-                    img_movie_allocine = Image.open(BytesIO(response.content))
 
                     ratings_element_full = results.find_all("div", class_="rating-holder rating-holder-3") 
                     ratings_element_incomplet = results.find_all("div", class_="rating-holder rating-holder-2") 
@@ -179,32 +175,36 @@ def get_movie_info(progress_bar, date=""):
                         press_rate, spect_rate = 0,0
 
                     page = requests.get(f"https://www.allocine.fr{video_element}")
-                    # print(f"https://www.allocine.fr{video_element}")
                     soup = BeautifulSoup(page.content, "html.parser")
                     results = soup.find(id="allocine__moviepage_videos_trailer")
                     trailer_element = results.find_all("div", class_="video-card-player")
                     video_element = trailer_element[0].find_all("figure")
                     dico_video = json.loads(video_element[0]['data-model'])
-                    video_link = dico_video['videos'][0]['sources']['standard'] 
+                    try:
+                        video_link = dico_video['videos'][0]['sources']['high'] 
+                        # print(title, 'high')
+                    except KeyError:
+                        video_link = dico_video['videos'][0]['sources']['standard'] 
+                        # print(title, 'standard')
                     url_trailer = video_link.replace("\\","")
                     
-                    liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, img_movie_allocine, press_rate, spect_rate])
+                    liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, url_img_movie_allocine, press_rate, spect_rate])
                 except IndexError:
-                    liste_cinema.append([channel, channel_number, None, None, release_year, None, starting_hour, title, subtitle, None, None, img_movie, 0, 0])
+                    liste_cinema.append([channel, channel_number, None, None, release_year, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
 
            
             # Show information
             else:
                 if movie_type == "Série TV":
-                    liste_serieTV.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
+                    liste_serieTV.append([url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Culture Infos":
-                    liste_culture.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
+                    liste_culture.append([url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Téléfilm":
-                    liste_tele_film.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
+                    liste_tele_film.append([url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 elif movie_type == "Sport":
-                    liste_sport.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
+                    liste_sport.append([url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
                 else:
-                    liste_autre.append([img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
+                    liste_autre.append([url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle])
     
     progress_bar.empty()      
     return liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre 

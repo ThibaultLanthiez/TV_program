@@ -54,6 +54,7 @@ def show_prog(title, data):
         st.title(title)
         nb_col = 4
         list_col = st.columns(nb_col)
+        
         if title == "Cinéma":
             # Sort movie by spectator rate
             movie_ranking_initial = [(elt[-1], elt[-2], elt[4]) for elt in data]
@@ -61,7 +62,7 @@ def show_prog(title, data):
             movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_descending]
             for i, index_movie in enumerate(movie_ranking):
                 movie = data[index_movie]
-                channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
+                channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, url_img_movie_allocine, press_rate, spect_rate = movie
                 
                 if press_rate == 0:
                     press_rate = "aucune note"
@@ -75,6 +76,9 @@ def show_prog(title, data):
                     if i in range(index_col, 20, nb_col):
                         column = col
                         break
+                
+                response = requests.get(url_img_movie_allocine)
+                img_movie_allocine = Image.open(BytesIO(response.content))
                     
                 column.write("_____")
                 column.image(img_movie_allocine, width=150)
@@ -92,8 +96,11 @@ def show_prog(title, data):
                     column.markdown(":warning: Film non trouvé sur Allocine")  
         else:
             for i, prog in enumerate(data):
-                img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle = prog
+                url_image_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle = prog
                 
+                response = requests.get(url_image_movie)
+                img_movie = Image.open(BytesIO(response.content))
+
                 # if platform.uname().system == "Linux": # Mobile device
                 #     column = st
                 # else:
