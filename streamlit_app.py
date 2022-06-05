@@ -18,9 +18,14 @@ st.set_page_config(page_title="Programme TV",
                    layout="wide",
                    initial_sidebar_state="collapsed")
 
-from screeninfo import get_monitors
-for m in get_monitors():
-    st.write(str(m))
+# from screeninfo import get_monitors
+# for m in get_monitors():
+#     st.write(str(m))
+
+import ctypes
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+st.write(screensize)
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
