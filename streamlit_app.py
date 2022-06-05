@@ -18,24 +18,9 @@ st.set_page_config(page_title="Programme TV",
                    layout="wide",
                    initial_sidebar_state="collapsed")
 
-# import pyautogui
-# width = pyautogui.size().width
-# st.write(width)
-
-
-# importing tkinter module
-from tkinter import *
-from tkinter.ttk import *
- 
-# creating tkinter window
-root = Tk()
- 
-# getting screen's height in pixels
-height = root.winfo_screenheight()
- 
-# getting screen's width in pixels
-width = root.winfo_screenwidth()
-st.write(width)
+from screeninfo import get_monitors
+for m in get_monitors():
+    st.write(str(m))
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
