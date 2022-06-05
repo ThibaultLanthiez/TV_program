@@ -55,71 +55,68 @@ movie_ranking_descending = sorted(movie_ranking_initial, reverse=True) # Descend
 movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_descending]
 
 
-st.title("Cinéma")
-if not liste_cinema:
-    st.write("_____")
-    st.markdown("**Pas de film**")
-nb_col = 4
-list_col_cinema = st.columns(nb_col)
-for i, index_movie in enumerate(movie_ranking):
-    movie = liste_cinema[index_movie]
-    channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
-    
-    if press_rate == 0:
-        press_rate = "aucune note"
-    if spect_rate == 0:
-        spect_rate = "aucune note"
 
-    # if platform.uname().system == "Linux": # Mobile device
-    #     column = st
-    # else:
-    for index_col, col in enumerate(list_col_cinema):
-        if i in range(index_col, 20, nb_col):
-            column = col
-            break
-        
-    column.write("_____")
-    column.image(img_movie_allocine, width=150)
-    column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-    column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
-    column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
-    if url_trailer:
-        with column.expander("Informations sur le film"):
-            st.video(url_trailer)
-            st.markdown(f"**Genre** : {', '.join(list_genre)}")
-            st.markdown(f"**Avec** : {', '.join(list_actors)}")
-            st.markdown(f"**Résumé** : {resume}")
-            st.markdown(f"[Voir sur Allociné]({url_movie})") 
-    else:
-        column.markdown(":warning: Film non trouvé sur Allocine")  
-
-##########
-def show_prog(title, data):
-    st.title(title)
-    if not data:
-        st.write("_____")
-        st.markdown("**Pas de programme**")
+if liste_cinema:
+    st.title("Cinéma")
     nb_col = 4
-    list_col = st.columns(nb_col)
-    for i, prog in enumerate(data):
-        img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle = prog
+    list_col_cinema = st.columns(nb_col)
+    for i, index_movie in enumerate(movie_ranking):
+        movie = liste_cinema[index_movie]
+        channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, img_movie_allocine, press_rate, spect_rate = movie
         
+        if press_rate == 0:
+            press_rate = "aucune note"
+        if spect_rate == 0:
+            spect_rate = "aucune note"
+
         # if platform.uname().system == "Linux": # Mobile device
         #     column = st
         # else:
-        for index_col, col in enumerate(list_col):
+        for index_col, col in enumerate(list_col_cinema):
             if i in range(index_col, 20, nb_col):
                 column = col
                 break
-
+            
         column.write("_____")
-        column.image(img_movie, width=150)
+        column.image(img_movie_allocine, width=150)
         column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-        subtitle_markdown = f"({subtitle})" if (subtitle and subtitle!=title) else ""
-        column.markdown(f"**{title}** {subtitle_markdown}") 
-        if resume_prog:
-            with column.expander("Informations sur le programme"):
-                st.markdown(f"**Résumé** : {resume_prog}")
+        column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
+        column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
+        if url_trailer:
+            with column.expander("Informations sur le film"):
+                st.video(url_trailer)
+                st.markdown(f"**Genre** : {', '.join(list_genre)}")
+                st.markdown(f"**Avec** : {', '.join(list_actors)}")
+                st.markdown(f"**Résumé** : {resume}")
+                st.markdown(f"[Voir sur Allociné]({url_movie})") 
+        else:
+            column.markdown(":warning: Film non trouvé sur Allocine")  
+
+##########
+def show_prog(title, data):
+    if data:
+        st.title(title)
+        nb_col = 4
+        list_col = st.columns(nb_col)
+        for i, prog in enumerate(data):
+            img_movie, channel, channel_number, resume_prog, starting_hour, title, subtitle = prog
+            
+            # if platform.uname().system == "Linux": # Mobile device
+            #     column = st
+            # else:
+            for index_col, col in enumerate(list_col):
+                if i in range(index_col, 20, nb_col):
+                    column = col
+                    break
+
+            column.write("_____")
+            column.image(img_movie, width=150)
+            column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
+            subtitle_markdown = f"({subtitle})" if (subtitle and subtitle!=title) else ""
+            column.markdown(f"**{title}** {subtitle_markdown}") 
+            if resume_prog:
+                with column.expander("Informations sur le programme"):
+                    st.markdown(f"**Résumé** : {resume_prog}")
        
 show_prog(title="Culture Infos", data=liste_culture)
 show_prog(title="Téléfilm", data=liste_tele_film)
