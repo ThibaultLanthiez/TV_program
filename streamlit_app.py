@@ -8,7 +8,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 from googletrans import Translator
-
+import os
 from get_movie_info import get_movie_info
 
 with open('url_movies_allocine.json', 'r') as f:
@@ -17,6 +17,8 @@ with open('url_movies_allocine.json', 'r') as f:
 st.set_page_config(page_title="Programme TV", 
                    layout="wide",
                    initial_sidebar_state="collapsed")
+
+os.environ['DISPLAY'] = ':0'
 import pyautogui
 width = pyautogui.size().width
 st.write(width)
