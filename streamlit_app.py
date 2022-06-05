@@ -8,7 +8,6 @@ from PIL import Image
 import requests
 from io import BytesIO
 from googletrans import Translator
-import os
 from get_movie_info import get_movie_info
 
 with open('url_movies_allocine.json', 'r') as f:
@@ -18,14 +17,9 @@ st.set_page_config(page_title="Programme TV",
                    layout="wide",
                    initial_sidebar_state="collapsed")
 
-# from screeninfo import get_monitors
-# for m in get_monitors():
-#     st.write(str(m))
-
-import ctypes
-user32 = ctypes.windll.user32
-screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-st.write(screensize)
+import subprocess
+output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+st.write(output)
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
