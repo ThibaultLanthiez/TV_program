@@ -48,6 +48,15 @@ st.title(f"{choice_date} à la télé ({translation.text})")
 
 ##############
 
+from secret_data import access_key, secret_access_key
+import boto3
+
+client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key =secret_access_key )
+
+upload_file_bucket = "prog-tv"
+upload_file_key = "data_base.json"
+client.download_file(upload_file_bucket, "data_base.json", upload_file_key)
+
 with open('data_base.json', 'r') as f:
   data_base = json.load(f)
 
@@ -165,14 +174,11 @@ for date in data_base.keys():
 
         change = True
 
-# Push changes to git
+# Push changes to S3
 if change:
     print('We do changes')
-    repo = Repo(".git")
-    repo.git.add(["data_base.json"])
-    repo.index.commit('script')
-    origin = repo.remote(name='origin')
-    origin.push()
+    client.upload_file( "data_base.json", upload_file_bucket, upload_file_key)
+
 
 # Avoir note téléfilm
 # Ajouter durée film
