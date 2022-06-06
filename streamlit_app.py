@@ -17,9 +17,9 @@ st.set_page_config(page_title="Programme TV",
                    layout="wide",
                    initial_sidebar_state="collapsed")
 
-import subprocess
-output = subprocess.run("xrandr | grep '*'")
-st.write(output)
+# import requests
+# headers = requests.utils.default_headers()
+# print(headers)
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
