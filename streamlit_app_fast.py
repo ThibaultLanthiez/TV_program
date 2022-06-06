@@ -166,13 +166,15 @@ show_prog(title="Autre", data=liste_autre)
 
 # Push changes to git
 import subprocess
-import git
+from git import Repo
+
 if change:
-    repo = git.Repo("https://github.com/ThibaultLanthiez/TV_program")
-    repo = git.Repo(repo.working_tree_dir)
-    repo.git.add('../data_base.json')
-    repo.git.commit('-m', 'script', author='thibault.lanthiez@outlook.fr')
-    repo.push()
+    repo = Repo(".git")
+    repo.git.add(update=True)
+    repo.index.commit('script')
+    origin = repo.remote(name='origin')
+    origin.push()
+    
     # subprocess.run("git status")
     # subprocess.run("git clone https://github.com/ThibaultLanthiez/TV_program")
     # subprocess.run("git pull")
