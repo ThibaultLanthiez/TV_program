@@ -142,39 +142,44 @@ show_prog(title="Série TV", data=liste_serieTV)
 show_prog(title="Autre", data=liste_autre)
 
 
-for i in range(-1,12):
-    date_format = datetime.datetime.now() + datetime.timedelta(days=i)
-    date = date_format.strftime('%Y-%m-%d')
-    if (not data_base.get(str(date))) or (len(data_base[str(date)]) != 6):
-        liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
+# for i in range(-1,12):
+#     date_format = datetime.datetime.now() + datetime.timedelta(days=i)
+#     date = date_format.strftime('%Y-%m-%d')
+#     if (not data_base.get(str(date))) or (len(data_base[str(date)]) != 6):
+#         liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
 
-        data_base[str(date)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
-        with open('data_base.json', 'w') as fp:
-            json.dump(data_base, fp) 
+#         data_base[str(date)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
+#         with open('data_base.json', 'w') as fp:
+#             json.dump(data_base, fp) 
 
-        change = True
+#         change = True
 
-for date in data_base.keys():
-    date_to_compare = datetime.datetime.strptime(date, '%Y-%m-%d')
-    if date_to_compare < datetime.datetime.now() - datetime.timedelta(days=3):
-        data_base.pop(date)
+# for date in data_base.keys():
+#     date_to_compare = datetime.datetime.strptime(date, '%Y-%m-%d')
+#     if date_to_compare < datetime.datetime.now() - datetime.timedelta(days=3):
+#         data_base.pop(date)
     
-        with open('data_base.json', 'w') as fp:
-            json.dump(data_base, fp) 
+#         with open('data_base.json', 'w') as fp:
+#             json.dump(data_base, fp) 
 
-        change = True
+#         change = True
 
 # Push changes to git
 import subprocess
-
+import git
 if change:
-    subprocess.run("git status")
-    subprocess.run("git clone https://github.com/ThibaultLanthiez/TV_program")
-    subprocess.run("git pull")
-    subprocess.run("git add data_base.json")
-    subprocess.run(f"git commit -m \"script\"")
-    subprocess.run("git push")
-    subprocess.run("rm -rf TV_program")
+    repo = git.Repo("https://github.com/ThibaultLanthiez/TV_program")
+    repo = git.Repo(repo.working_tree_dir)
+    repo.git.add('../data_base.json')
+    repo.git.commit('-m', 'script', author='thibault.lanthiez@outlook.fr')
+    repo.push()
+    # subprocess.run("git status")
+    # subprocess.run("git clone https://github.com/ThibaultLanthiez/TV_program")
+    # subprocess.run("git pull")
+    # subprocess.run("git add data_base.json")
+    # subprocess.run(f"git commit -m \"script\"")
+    # subprocess.run("git push")
+    # subprocess.run("rm -rf TV_program")
 # subprocess.run("rm -rf data_base.json")
 
 # Avoir note téléfilm
