@@ -1,8 +1,6 @@
 import datetime
-import difflib
 import json
 import requests
-from bs4 import BeautifulSoup
 import streamlit as st
 from PIL import Image
 import requests
@@ -10,6 +8,7 @@ from io import BytesIO
 from googletrans import Translator
 from get_movie_info import get_movie_info
 
+change = False
 with open('url_movies_allocine.json', 'r') as f:
   movie_data_base = json.load(f)
 
@@ -24,16 +23,20 @@ choice_date = st.sidebar.selectbox(
 
 if choice_date == "Ce soir":
     date = ""
+    date_dict = datetime.datetime.now().strftime('%Y-%m-%d')
 elif choice_date == "Demain":
     currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=1)
     date = currentTimeDate.strftime('%Y-%m-%d')
+    date_dict = date
 elif choice_date == "Après demain":
     currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=2)
     date = currentTimeDate.strftime('%Y-%m-%d')
+    date_dict = date
 elif choice_date == "Hier":
     currentTimeDate = datetime.datetime.now() - datetime.timedelta(days=1)
-    date = currentTimeDate.strftime('%Y-%m-%d')  
-
+    date = currentTimeDate.strftime('%Y-%m-%d') 
+    date_dict = date
+        
 change_date = date if date else datetime.datetime.today().strftime('%Y-%m-%d')
 date_format = datetime.datetime.strptime(change_date, '%Y-%m-%d')
 date_correct = str(date_format.strftime('%A %d %b %Y'))
@@ -42,8 +45,22 @@ translation = english_translator.translate(date_correct, dest="fr")
 col1, col2 = st.columns(2)
 st.title(f"{choice_date} à la télé ({translation.text})")
 
-progress_bar = st.progress(0)
-liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date, progress_bar=progress_bar)
+##############
+
+with open('data_base.json', 'r') as f:
+  data_base = json.load(f)
+
+if (not data_base.get(str(date_dict))) or (len(data_base[str(date_dict)]) != 6):
+    progress_bar = st.progress(0)
+
+    liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date, progress_bar=progress_bar)     
+
+    data_base[str(date_dict)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
+    with open('data_base.json', 'w') as fp:
+        json.dump(data_base, fp)
+    change = True
+
+liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = data_base[str(date_dict)]
 st.write("_____")
 
 ##############
@@ -124,6 +141,39 @@ show_prog(title="Sport", data=liste_sport)
 show_prog(title="Série TV", data=liste_serieTV)
 show_prog(title="Autre", data=liste_autre)
 
+
+for i in range(-1,12):
+    date_format = datetime.datetime.now() + datetime.timedelta(days=i)
+    date = date_format.strftime('%Y-%m-%d')
+    if (not data_base.get(str(date))) or (len(data_base[str(date)]) != 6):
+        liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
+
+        data_base[str(date)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
+        with open('data_base.json', 'w') as fp:
+            json.dump(data_base, fp) 
+
+        change = True
+
+for date in data_base.keys():
+    date_to_compare = datetime.datetime.strptime(date, '%Y-%m-%d')
+    if date_to_compare < datetime.datetime.now() - datetime.timedelta(days=3):
+        data_base.pop(date)
+    
+        with open('data_base.json', 'w') as fp:
+            json.dump(data_base, fp) 
+
+        change = True
+
+# Push changes to git
+import subprocess
+if change:
+    subprocess.run("git clone https://github.com/ThibaultLanthiez/TV_program")
+    subprocess.run("git pull")
+    subprocess.run("git add data_base.json")
+    subprocess.run(f"git commit -m \"script\"")
+    subprocess.run("git push")
+    subprocess.run("rm -rf TV_program")
+# subprocess.run("rm -rf data_base.json")
 
 # Avoir note téléfilm
 # Ajouter durée film
