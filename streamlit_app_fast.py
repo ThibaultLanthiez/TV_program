@@ -166,7 +166,9 @@ for date in data_base.keys():
 
 # Push changes to git
 import subprocess
+
 if change:
+    subprocess.run("git status")
     subprocess.run("git clone https://github.com/ThibaultLanthiez/TV_program")
     subprocess.run("git pull")
     subprocess.run("git add data_base.json")
