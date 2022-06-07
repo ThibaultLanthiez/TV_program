@@ -62,12 +62,8 @@ with open('data_base.json', 'r') as f:
 
 if (not data_base.get(str(date_dict))) or (len(data_base[str(date_dict)]) != 6):
     progress_bar = st.progress(0)
-
     liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date, progress_bar=progress_bar)     
-
     data_base[str(date_dict)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
-    with open('data_base.json', 'w') as fp:
-        json.dump(data_base, fp)
     change = True
 
 liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = data_base[str(date_dict)]
@@ -157,26 +153,20 @@ for i in range(-1,12):
     date = date_format.strftime('%Y-%m-%d')
     if (not data_base.get(str(date))) or (len(data_base[str(date)]) != 6):
         liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre = get_movie_info(date=date)
-
         data_base[str(date)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
-        with open('data_base.json', 'w') as fp:
-            json.dump(data_base, fp) 
-
         change = True
 
 for date in data_base.keys():
     date_to_compare = datetime.datetime.strptime(date, '%Y-%m-%d')
     if date_to_compare < datetime.datetime.now() - datetime.timedelta(days=3):
         data_base.pop(date)
-    
-        with open('data_base.json', 'w') as fp:
-            json.dump(data_base, fp) 
-
         change = True
 
 # Push changes to S3
 if change:
     print('We do changes')
+    with open('data_base.json', 'w') as fp:
+        json.dump(data_base, fp) 
     client.upload_file( "data_base.json", upload_file_bucket, upload_file_key)
 
 
