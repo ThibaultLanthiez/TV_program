@@ -156,11 +156,15 @@ for i in range(-1,12):
         data_base[str(date)] = [liste_cinema, liste_serieTV, liste_culture, liste_tele_film, liste_sport, liste_autre]
         change = True
 
+date_to_delete = []
 for date in data_base.keys():
     date_to_compare = datetime.datetime.strptime(date, '%Y-%m-%d')
     if date_to_compare < datetime.datetime.now() - datetime.timedelta(days=3):
-        data_base.pop(date)
+        date_to_delete.append(date)
         change = True
+        
+for date in date_to_delete:
+    data_base.pop(date)
 
 # Push changes to S3
 if change:
