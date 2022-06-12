@@ -167,11 +167,11 @@ for date in date_to_delete:
     data_base.pop(date)
 
 # Push changes to S3
-if change:
-    print('We do changes')
-    with open('data_base.json', 'w') as fp:
-        json.dump(data_base, fp) 
-    client.upload_file( "data_base.json", upload_file_bucket, upload_file_key)
+# if change:
+#     print('We do changes')
+#     with open('data_base.json', 'w') as fp:
+#         json.dump(data_base, fp) 
+#     client.upload_file( "data_base.json", upload_file_bucket, upload_file_key)
 
 
 # Avoir note téléfilm
