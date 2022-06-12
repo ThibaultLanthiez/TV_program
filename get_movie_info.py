@@ -92,7 +92,7 @@ def get_movie_info(progress_bar=None, date=""):
             url_image_movie = apply_ratio[0]["src"] 
 
 
-        # Get release year
+        # Get resume
         page = requests.get(link)
         soup = BeautifulSoup(page.content, "html.parser")
         results = soup.find(id="corps")
@@ -102,22 +102,25 @@ def get_movie_info(progress_bar=None, date=""):
         else:
             resume_prog = None
 
+        # Get genre plus
+        info_of_movie = results.find_all('ul', class_="overview-overviewSubtitle")    
+        if info_of_movie:
+            genre_plus = info_of_movie[0].find_all("li")[0].text.split(' - ')[1]
+            if genre_plus == "Film documentaire":
+                movie_type = "Culture Infos"
+
 
         # Get Allocine information
         if movie_type == "Cinéma":
 
             try :
                 # Get release year
-                page = requests.get(link)
-                soup = BeautifulSoup(page.content, "html.parser")
-                results = soup.find(id="corps")
-                info_of_movie = results.find_all('ul', class_="overview-overviewSubtitle")    
                 release_year = info_of_movie[0].find_all("li")[1].text.strip()
                 # print(title, release_year)
 
                 closest_key = difflib.get_close_matches(title.lower(), movie_data_base.keys())[0]
                 urls_movie = movie_data_base[closest_key]
-                # print(closest_key, urls_movie)
+                # print(title, closest_key, urls_movie)
                     
 
                 if len(urls_movie) > 1:
@@ -128,6 +131,8 @@ def get_movie_info(progress_bar=None, date=""):
 
                         year_element = results.find_all('div', class_="meta-body-item meta-body-info")
                         year_element = year_element[0].find_all('span')
+                        if not year_element:
+                            year_element = year_element[0].find_all('a')
                         year = year_element[0].text.strip()[-4:]
 
                         # print(year, release_year)
@@ -158,8 +163,6 @@ def get_movie_info(progress_bar=None, date=""):
                 actors_element = results.find_all('div', class_="meta-body-item meta-body-actor")
                 list_actors = [actor.text.strip() for actor in actors_element[0].find_all('span')[1:]]
                 
-                video_element = results.find_all('a', class_="trailer item")[0]['href']
-
                 # Get movie image
                 image_element = results.find_all('img', class_="thumbnail-img")
                 url_img_movie_allocine = image_element[0]["src"] 
@@ -175,18 +178,14 @@ def get_movie_info(progress_bar=None, date=""):
                 else:
                     press_rate, spect_rate = 0,0
 
-                page = requests.get(f"https://www.allocine.fr{video_element}")
-                soup = BeautifulSoup(page.content, "html.parser")
-                results = soup.find(id="allocine__moviepage_videos_trailer")
+
                 trailer_element = results.find_all("div", class_="video-card-player")
                 video_element = trailer_element[0].find_all("figure")
                 dico_video = json.loads(video_element[0]['data-model'])
                 try:
                     video_link = dico_video['videos'][0]['sources']['high'] 
-                    # print(title, 'high')
                 except KeyError:
                     video_link = dico_video['videos'][0]['sources']['standard'] 
-                    # print(title, 'standard')
                 url_trailer = video_link.replace("\\","")
                 
                 liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, url_img_movie_allocine, press_rate, spect_rate])
