@@ -178,10 +178,19 @@ def get_movie_info(progress_bar=None, date=""):
                 else:
                     press_rate, spect_rate = 0,0
 
-
-                trailer_element = results.find_all("div", class_="video-card-player")
-                video_element = trailer_element[0].find_all("figure")
-                dico_video = json.loads(video_element[0]['data-model'])
+                # Get trailer
+                try:
+                    trailer_element = results.find_all("div", class_="video-card-player")
+                    video_element = trailer_element[0].find_all("figure")
+                    dico_video = json.loads(video_element[0]['data-model'])
+                except Exception:
+                    video_element = results.find_all('a', class_="trailer item")[0]['href']
+                    page = requests.get(f"https://www.allocine.fr{video_element}")
+                    soup = BeautifulSoup(page.content, "html.parser")
+                    results = soup.find(id="allocine__moviepage_videos_trailer")
+                    trailer_element = results.find_all("div", class_="video-card-player")
+                    video_element = trailer_element[0].find_all("figure")
+                    dico_video = json.loads(video_element[0]['data-model'])
                 try:
                     video_link = dico_video['videos'][0]['sources']['high'] 
                 except KeyError:
