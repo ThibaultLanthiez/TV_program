@@ -136,7 +136,7 @@ def get_movie_info(progress_bar=None, date=""):
                         year = year_element[0].text.strip()[-4:]
 
                         # print(year, release_year)
-                        if int(year) in [int(release_year)-1, int(release_year), int(release_year)+1]:
+                        if int(year) in [int(release_year)-2, int(release_year)-1, int(release_year), int(release_year)+1, int(release_year)+2]:
                             break
                 else:
                     url = urls_movie[0]
