@@ -43,6 +43,8 @@ def initialize_movie_db():
 
             if title == "lola e seus irmãos":
                 title = "lola et ses frères"
+            if title == 'the debt collector':
+                title = 'the cash collector'
 
             if movie_data_base.get(title) and (f"https://www.allocine.fr{element['href']}" not in movie_data_base[title]):
                 print(f"\tADD - {title}")
