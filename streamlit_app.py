@@ -107,9 +107,10 @@ def show_prog(title, data):
                 column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
                 column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
                 column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
-                if url_trailer:
+                if list_genre:
                     with column.expander("Informations sur le film"):
-                        st.video(url_trailer)
+                        if url_trailer:
+                            st.video(url_trailer)
                         st.markdown(f"**Genre** : {', '.join(list_genre)}")
                         st.markdown(f"**Avec** : {', '.join(list_actors)}")
                         st.markdown(f"**Résumé** : {resume}")
