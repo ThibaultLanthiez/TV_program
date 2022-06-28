@@ -19,7 +19,7 @@ st.set_page_config(page_title="Programme TV",
 
 choice_date = st.sidebar.selectbox(
      "Choix de la date :",
-     ('Hier', 'Ce soir', 'Demain', "Après demain"),
+     ['Hier', 'Ce soir', 'Demain']+[str((datetime.datetime.now() + datetime.timedelta(days=i)).strftime("%d/%m/%Y")) for i in range(2,11)],
      index=1)
 
 if choice_date == "Ce soir":
@@ -29,22 +29,25 @@ elif choice_date == "Demain":
     currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=1)
     date = currentTimeDate.strftime('%Y-%m-%d')
     date_dict = date
-elif choice_date == "Après demain":
-    currentTimeDate = datetime.datetime.now() + datetime.timedelta(days=2)
-    date = currentTimeDate.strftime('%Y-%m-%d')
-    date_dict = date
 elif choice_date == "Hier":
     currentTimeDate = datetime.datetime.now() - datetime.timedelta(days=1)
     date = currentTimeDate.strftime('%Y-%m-%d') 
     date_dict = date
+else:
+    update_date = datetime.datetime.strptime(choice_date, "%d/%m/%Y") 
+    date = update_date.strftime('%Y-%m-%d') 
+    date_dict = date
         
-change_date = date if date else datetime.datetime.today().strftime('%Y-%m-%d')
+change_date = str(date) if date else datetime.datetime.today().strftime('%Y-%m-%d')
 date_format = datetime.datetime.strptime(change_date, '%Y-%m-%d')
-date_correct = str(date_format.strftime('%A %d %b %Y'))
+date_correct = str(date_format.strftime('%A %d %B'))
 english_translator = Translator() # pip install googletrans==3.1.0a0
 translation = english_translator.translate(date_correct, dest="fr")
 col1, col2 = st.columns(2)
-st.title(f"{choice_date} à la télé ({translation.text})")
+if choice_date in ['Hier', 'Ce soir', 'Demain']:
+    st.title(f"{choice_date} à la télé ({translation.text})")
+else:
+    st.title(f"{translation.text} à la télé")
 
 ##############
 
@@ -105,8 +108,10 @@ def show_prog(title, data):
                 column.write("_____")
                 column.image(img_movie_allocine, width=150)
                 column.markdown(f"{channel} (chaîne {channel_number[2:]}) - {starting_hour}")
-                column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")                     
-                column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**  |  Année : **{year}**")   
+                column.markdown(f"**{title}** {f'({subtitle})' if (subtitle and subtitle!=title) else ''}")
+                add_year = f" |  Année : **{year}**" if year else ""         
+                if spect_rate != "aucune note":            
+                    column.markdown(f"Spectateurs : **{spect_rate}**  |  Presse : **{press_rate}**"+add_year)   
                 if list_genre:
                     with column.expander("Informations sur le film"):
                         if url_trailer:
