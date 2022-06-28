@@ -202,9 +202,9 @@ def get_movie_info(progress_bar=None, date=""):
                 
                 liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, url_img_movie_allocine, press_rate, spect_rate])
             except IndexError:
-                liste_cinema.append([channel, channel_number, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
+                liste_cinema.append([channel, channel_number, None, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
             except KeyError:
-                liste_cinema.append([channel, channel_number, None, None, release_year, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
+                liste_cinema.append([channel, channel_number, None, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
 
            
         # Show information
