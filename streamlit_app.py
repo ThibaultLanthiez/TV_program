@@ -7,7 +7,6 @@ import requests
 from io import BytesIO
 from googletrans import Translator
 from get_movie_info import get_movie_info
-from git import Repo
 
 change = False
 with open('url_movies_allocine.json', 'r') as f:
