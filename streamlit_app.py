@@ -155,8 +155,7 @@ show_prog(title="Série TV", data=liste_serieTV)
 show_prog(title="Autre", data=liste_autre)
 
 
-# for i in range(-1,12):
-for i in range(-1,1):
+for i in range(-1,12):
     date_format = datetime.datetime.now() + datetime.timedelta(days=i)
     date = date_format.strftime('%Y-%m-%d')
     if (not data_base.get(str(date))) or (len(data_base[str(date)]) != 6):
