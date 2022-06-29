@@ -86,7 +86,6 @@ def show_prog(title, data):
             movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_descending]
             for i, index_movie in enumerate(movie_ranking):
                 movie = data[index_movie]
-                st.write(movie)
                 channel, channel_number, duration, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, url_img_movie_allocine, press_rate, spect_rate = movie
                 
                 if press_rate == 0:
