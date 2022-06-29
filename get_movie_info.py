@@ -103,25 +103,27 @@ def get_movie_info(progress_bar=None, date=""):
             resume_prog = None
 
         # Get genre plus
-        info_of_movie = results.find_all('ul', class_="overview-overviewSubtitle")    
-        if info_of_movie:
-            genre_plus = info_of_movie[0].find_all("li")[0].text.split(' - ')[1]
-            if genre_plus == "Film documentaire":
-                movie_type = "Culture Infos"
+        info_of_movie = results.find_all(class_="programHome-overview")
+        # if info_of_movie:
+        #     genre_plus = info_of_movie[0].find_all("li")[0].text.split(' - ')[1]
+        #     if genre_plus == "Film documentaire":
+        #         movie_type = "Culture Infos"
 
 
         # Get Allocine information
         if movie_type == "Cinéma":
 
+
             try :
                 # Get release year
-                release_year = info_of_movie[0].find_all("li")[1].text.strip()
-                # print(title, release_year)
+                release_year = info_of_movie[0].find_all("li")[3].text.strip().split(',')[0]
 
                 closest_key = difflib.get_close_matches(title.lower(), movie_data_base.keys())[0]
                 urls_movie = movie_data_base[closest_key]
                 # print(title, closest_key, urls_movie)
                     
+                duration_elt = info_of_movie[0].find_all("li")[0].text.strip()[:4]
+                duration = duration_elt if duration_elt else None
 
                 if len(urls_movie) > 1:
                     for url in urls_movie:
@@ -200,13 +202,10 @@ def get_movie_info(progress_bar=None, date=""):
                 except Exception:
                     url_trailer = None
                 
-                liste_cinema.append([channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, url_img_movie_allocine, press_rate, spect_rate])
-            except IndexError:
-                liste_cinema.append([channel, channel_number, None, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
-            except KeyError:
-                liste_cinema.append([channel, channel_number, None, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
+                liste_cinema.append([channel, channel_number, duration, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url, resume, url_img_movie_allocine, press_rate, spect_rate])
+            except Exception:
+                liste_cinema.append([channel, channel_number, None, None, None, None, None, starting_hour, title, subtitle, None, None, url_image_movie, 0, 0])
 
-           
         # Show information
         else:
             if movie_type == "Série TV":

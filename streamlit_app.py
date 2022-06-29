@@ -87,7 +87,7 @@ def show_prog(title, data):
             movie_ranking = [movie_ranking_initial.index(mark) for mark in movie_ranking_descending]
             for i, index_movie in enumerate(movie_ranking):
                 movie = data[index_movie]
-                channel, channel_number, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, url_img_movie_allocine, press_rate, spect_rate = movie
+                channel, channel_number, duration, list_actors, list_genre, year, url_trailer, starting_hour, title, subtitle, url_movie, resume, url_img_movie_allocine, press_rate, spect_rate = movie
                 
                 if press_rate == 0:
                     press_rate = "aucune note"
@@ -118,6 +118,7 @@ def show_prog(title, data):
                             st.video(url_trailer)
                         st.markdown(f"**Genre** : {', '.join(list_genre)}")
                         st.markdown(f"**Avec** : {', '.join(list_actors)}")
+                        st.markdown(f"**Durée** : {duration}")
                         st.markdown(f"**Résumé** : {resume}")
                         st.markdown(f"[Voir sur Allociné]({url_movie})") 
                 else:
@@ -180,7 +181,4 @@ if change:
     client.upload_file( "data_base.json", upload_file_bucket, upload_file_key)
 
 
-# Avoir note téléfilm
-# Ajouter durée film
-# Mettre sur porfolio
 # Gérer ordre portable
